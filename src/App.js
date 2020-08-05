@@ -46,9 +46,7 @@ function App() {
     getCountriesData();
   }, []);
 
-  const onCountryChange = async (event) => {
-    const countryCode = event.target.value;
-
+  const focusCountry = async (countryCode) => {
     const url = countryCode === 'worldwide' ? 'https://disease.sh/v3/covid-19/all' : `https://disease.sh/v3/covid-19/countries/${countryCode}`;
     await fetch(url)
       .then(response => response.json())
@@ -59,6 +57,15 @@ function App() {
         setMapCenter(center);
         setMapZoom(4);
       });
+  };
+
+  const onCountryChange = event => {
+    const countryCode = event.target.value;
+    focusCountry(countryCode);
+  };
+
+  const clickCountry = countryCode => {
+    focusCountry(countryCode);
   };
 
   console.log("CONTRY INFO >>>", countryInfo);
@@ -121,7 +128,7 @@ function App() {
       <Card className="app__right">
         <CardContent>
           <h3>Live Cases by Country</h3>
-          <Table countries={tableData} />
+          <Table countries={tableData} clickCountry={clickCountry} />
           <h3>Worldwide New {casesType}</h3>
           <LineGraph className="app__graph" casesType={casesType} />
           {/* Graph */}
